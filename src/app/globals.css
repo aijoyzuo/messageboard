@@ -1,26 +1,12 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+html, body {
+  scroll-behavior: smooth;
+  font-family: 'Inter', 'Noto Sans TC', sans-serif;
+  background-image: url("/images/paperboard4.jpg"); /* 可先拿掉，之後再放圖 */
+  background-repeat: repeat-y;
+  background-position: center top;
+  background-size: auto;
+  background-color: #000;  
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
-}
