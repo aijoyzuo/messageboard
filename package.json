@@ -27,5 +27,10 @@
     "postcss": "^8.5.6",
     "tailwindcss": "^4.1.14",
     "typescript": "^5"
+  },
+   "scripts": {
+    "build": "prisma generate && prisma migrate deploy && next build",
+    "dev": "next dev",
+    "postinstall": "prisma generate"
   }
 }

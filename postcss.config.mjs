@@ -1,7 +1,8 @@
 // postcss.config.mjs
+/** @type {import('postcss-load-config').Config} */
 export default {
   plugins: {
-    '@tailwindcss/postcss': {}, // v4 要用這個外掛名稱
+    '@tailwindcss/postcss': {},
     autoprefixer: {},
   },
-};
+}
