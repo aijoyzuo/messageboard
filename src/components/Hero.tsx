@@ -6,7 +6,7 @@ type Props = {
   subtitle?: string;
   imageSrc: string;
   imageAlt?: string;
-  className?: string;       // 高度/比例
+  className?: string;      
   outerClassName?: string;  // 外距等
   titleClass?: string;      // 文字顏色 class（例如 text-yellow-300）
   subtitleClass?: string;
