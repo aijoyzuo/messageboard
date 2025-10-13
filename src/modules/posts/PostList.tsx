@@ -24,7 +24,7 @@ export default async function PostList({ page }: { page: number }) {
     return (
       <ul className="mt-6 space-y-3">
         {posts.map((p) => {
-          const needsMore = p.body.includes("\n") || p.body.length > 60; // 超過一行才顯示「查看完整內容」
+          const needsMore = p.body.includes("\n") || p.body.length > 60;
 
           return (
             <li key={p.id} className="rounded-lg bg-white/50 p-5">
@@ -32,18 +32,12 @@ export default async function PostList({ page }: { page: number }) {
                 <span className="font-bold">{p.author || "Anonymous"}</span>{" · "}
                 {new Date(p.createdAt).toLocaleString("zh-TW")}
               </div>
-
-              {/* 列表只顯示一行，保留換行符（但仍被 clamp 掉） */}
               <div className="mt-1 text-slate-500 line-clamp-1 whitespace-pre-line break-words">
                 {p.body}
               </div>
-
               {needsMore && (
                 <div className="mt-2">
-                  <Link
-                    className="text-sm text-blue-500 hover:underline"
-                    href={`/post/${p.id}?from=${encodeURIComponent(from)}`}
-                  >
+                  <Link className="text-sm text-blue-500 hover:underline" href={`/post/${p.id}?from=${encodeURIComponent(from)}`}>
                     查看完整內容
                   </Link>
                 </div>
@@ -53,10 +47,11 @@ export default async function PostList({ page }: { page: number }) {
         })}
       </ul>
     );
-  } catch (e: any) {
+  } catch (err: unknown) {                       {/* ✅ 用 unknown + 窄化 */}
+    const message = err instanceof Error ? err.message : String(err);
     return (
       <pre className="mt-6 whitespace-pre-wrap rounded bg-red-50 p-3 text-sm text-red-700">
-        伺服器端讀取資料時發生錯誤：{String(e)}
+        伺服器端讀取資料時發生錯誤：{message}
       </pre>
     );
   }
