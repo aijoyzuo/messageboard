@@ -1,12 +1,12 @@
-// prisma/schema.prisma
+
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
   provider  = "postgresql"
-  url       = env("DATABASE_URL")   // app 走 6543 (pgbouncer)
-  directUrl = env("DIRECT_URL")     // CLI 走 5432
+  url       = env("DATABASE_URL")   
+  directUrl = env("DIRECT_URL")     
 }
 
 model Post {
