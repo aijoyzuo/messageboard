@@ -21,70 +21,76 @@ function getPaginationRange(totalPages: number, current: number, sibling = 1, bo
 }
 
 export default async function Pagination({ page }: { page: number }) {
-  const total = await prisma.post.count();
-  const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
-  if (totalPages <= 1) return null;
+  try {
+    const total = await prisma.post.count();
+    const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+    if (totalPages <= 1) return null;
 
-  const prev = Math.max(1, page - 1);
-  const next = Math.min(totalPages, page + 1);
-  const items = getPaginationRange(totalPages, page, 1, 1);
+    const prev = Math.max(1, page - 1);
+    const next = Math.min(totalPages, page + 1);
+    const items = getPaginationRange(totalPages, page, 1, 1);
 
-  return (
-    <nav
-      className="mt-6 flex items-center justify-center gap-2 text-slate-700"
-      aria-label="Pagination"
-    >
-      {/* 上一頁 */}
-      <Link
-        href={`/?page=${prev}`}
-        aria-disabled={page <= 1}
-        className={`px-3 py-2 rounded text-sm
-                    hover:text-blue-300 font-bold
-                    ${page <= 1 ? "opacity-40 pointer-events-none" : ""}`}
+    return (
+      <nav
+        className="mt-6 flex items-center justify-center gap-2 text-slate-700"
+        aria-label="Pagination"
       >
-        上一頁
-      </Link>
+        {/* 上一頁 */}
+        <Link
+          href={`/?page=${prev}`}
+          aria-disabled={page <= 1}
+          className={`px-3 py-2 rounded text-sm
+                      hover:text-blue-300 font-bold
+                      ${page <= 1 ? "opacity-40 pointer-events-none" : ""}`}
+        >
+          上一頁
+        </Link>
 
-      {/* 中間頁碼 */}
-      <ul className="flex items-center gap-1">
-        {items.map((it, idx) =>
-          it === "..." ? (
-            <li key={`dots-${idx}`} className="px-2 text-slate-400 select-none">…</li>
-          ) : it === page ? (
-            // 目前頁：深底白字
-            <li key={it}>
-              <span
-                aria-current="page"
-                className="px-3 py-2 rounded text-sm font-medium
-                           bg-slate-900 text-white"
-              >
-                {it}
-              </span>
-            </li>
-          ) : (
-            <li key={it}>
-              <Link
-                href={`/?page=${it}`}
-                className="px-3 py-2 rounded text-sm
-                            hover:bg-blue-300 hover:text-blue-100" 
-              >
-                {it}
-              </Link>
-            </li>
-          )
-        )}
-      </ul>
+        {/* 中間頁碼 */}
+        <ul className="flex items-center gap-1">
+          {items.map((it, idx) =>
+            it === "..." ? (
+              <li key={`dots-${idx}`} className="px-2 text-slate-400 select-none">…</li>
+            ) : it === page ? (
+              // 目前頁：深底白字
+              <li key={it}>
+                <span
+                  aria-current="page"
+                  className="px-3 py-2 rounded text-sm font-medium
+                             bg-slate-900 text-white"
+                >
+                  {it}
+                </span>
+              </li>
+            ) : (
+              <li key={it}>
+                <Link
+                  href={`/?page=${it}`}
+                  className="px-3 py-2 rounded text-sm
+                              hover:bg-blue-300 hover:text-blue-100" 
+                >
+                  {it}
+                </Link>
+              </li>
+            )
+          )}
+        </ul>
 
-      {/* 下一頁 */}
-      <Link
-        href={`/?page=${next}`}
-        aria-disabled={page >= totalPages}
-        className={`px-3 py-2 rounded text-sm
-                    hover:text-blue-300 font-bold
-                    ${page >= totalPages ? "opacity-40 pointer-events-none" : ""}`}
-      >
-        下一頁
-      </Link>
-    </nav>
-  );
+        {/* 下一頁 */}
+        <Link
+          href={`/?page=${next}`}
+          aria-disabled={page >= totalPages}
+          className={`px-3 py-2 rounded text-sm
+                      hover:text-blue-300 font-bold
+                      ${page >= totalPages ? "opacity-40 pointer-events-none" : ""}`}
+        >
+          下一頁
+        </Link>
+      </nav>
+    );
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : String(err);
+    // 不動你的樣式，錯誤時僅顯示純文字（避免整頁白屏）
+    return <pre>分頁元件讀取資料時發生錯誤：{message}</pre>;
+  }
 }

@@ -1,3 +1,4 @@
+export const runtime = "nodejs";
 import "./globals.css";
 
 export const metadata = { title: "Message Board" };
