@@ -12,6 +12,9 @@ export default function PostForm() {
   const currentPage = Number(searchParams.get("page") ?? "1");
   const from = `/?page=${currentPage || 1}`;
 
+
+
+  
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setPending(true);
