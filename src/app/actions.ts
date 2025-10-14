@@ -1,3 +1,4 @@
+// src/app/actions.ts
 "use server";
 
 import supabase from "@/lib/supabase"; // 引入 Supabase 客戶端
@@ -10,9 +11,7 @@ export async function addPost(fd: FormData) {
   // 使用 Supabase 插入新的 Post 資料
   const { data, error } = await supabase
     .from("Post")
-    .insert([
-      { author, body }  // 不需要指定 id，讓資料庫自動生成
-    ]);
+    .insert([{ author, body }]);  // 不需要手動提供 id，讓資料庫自動生成
 
   if (error) {
     return { ok: false, error: error.message };

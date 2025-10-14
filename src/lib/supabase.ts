@@ -1,31 +1,9 @@
+// src/lib/supabase.ts
 import { createClient } from "@supabase/supabase-js";
 
 const supabaseUrl = process.env.SUPABASE_URL!;
 const supabaseAnonKey = process.env.SUPABASE_ANON_KEY!;
+
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
-
-async function testSupabase() {
-  // 測試查詢資料
-  const { data, error } = await supabase.from("Post").select("*").limit(5);
-
-  if (error) {
-    console.error("Supabase error:", error);
-  } else {
-    console.log("Fetched data:", data);
-  }
-
-  // 測試插入資料
-  const { data: insertData, error: insertError } = await supabase
-    .from("Post")
-    .insert([{ author: "Test Author", body: "This is a test post" }]);
-
-  if (insertError) {
-    console.error("Insert error:", insertError);
-  } else {
-    console.log("Insert success:", insertData); // 插入的資料
-  }
-}
-
-testSupabase();
 
 export default supabase;

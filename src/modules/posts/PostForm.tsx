@@ -12,23 +12,27 @@ export default function PostForm() {
   const currentPage = Number(searchParams.get("page") ?? "1");
   const from = `/?page=${currentPage || 1}`;
 
-
-
-  
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setPending(true);
     const fd = new FormData(formRef.current!);
-    fd.set("from", from);
+    fd.set("from", from); // 設置隱藏欄位 from
     
     try {
       // 提交資料到 Supabase
       const { author, body } = Object.fromEntries(fd.entries());
       
+      if (!author || !body) {
+        alert("留言或名字不能為空");
+        setPending(false);
+        return;
+      }
+
+      // 使用 Supabase 插入新的 Post 資料
       const { error } = await supabase
         .from("Post")
         .insert([
-          { author: author || "Anonymous", body },
+          { author: author || "Anonymous", body }, // 使用提供的 author 和 body，若無則預設為 "Anonymous"
         ]);
 
       if (error) {
