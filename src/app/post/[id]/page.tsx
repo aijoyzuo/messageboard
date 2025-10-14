@@ -1,6 +1,6 @@
-import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import supabase from "@/lib/supabase"; // 引入 Supabase 客戶端
 
 type Search = { from?: string };
 
@@ -15,23 +15,32 @@ export default async function PostDetail({
   const sp = await searchParams;
   const backHref = sp?.from || "/";
 
-  const post = await prisma.post.findUnique({
-    where: { id },
-    select: { id: true, author: true, body: true, createdAt: true },
-  });
-  if (!post) return notFound();
+  // 使用 Supabase 查詢單一文章
+  const { data: post, error: postError } = await supabase
+    .from("Post")
+    .select("id, author, body, createdAt")
+    .eq("id", id)
+    .single(); // .single() 用來保證只返回一條資料
 
-  const newer = await prisma.post.findFirst({
-    where: { createdAt: { gt: post.createdAt } },
-    orderBy: { createdAt: "asc" },
-    select: { id: true },
-  });
+  if (postError || !post) return notFound();
 
-  const older = await prisma.post.findFirst({
-    where: { createdAt: { lt: post.createdAt } },
-    orderBy: { createdAt: "desc" },
-    select: { id: true },
-  });
+  // 查詢比該文章新的文章（創建時間晚於該文章）
+  const { data: newer, error: newerError } = await supabase
+    .from("Post")
+    .select("id")
+    .gt("createdAt", post.createdAt)
+    .order("createdAt", { ascending: true })
+    .limit(1)
+    .single();
+
+  // 查詢比該文章舊的文章（創建時間早於該文章）
+  const { data: older, error: olderError } = await supabase
+    .from("Post")
+    .select("id")
+    .lt("createdAt", post.createdAt)
+    .order("createdAt", { ascending: false })
+    .limit(1)
+    .single();
 
   const newerHref = newer ? `/post/${newer.id}?from=${encodeURIComponent(backHref)}` : "#";
   const olderHref = older ? `/post/${older.id}?from=${encodeURIComponent(backHref)}` : "#";

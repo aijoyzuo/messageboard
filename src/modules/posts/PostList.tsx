@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { prisma } from "@/lib/prisma";
+import supabase from "@/lib/supabase"; // 載入 Supabase 客戶端
+
 
 export const PAGE_SIZE = 10;
 
@@ -7,15 +8,27 @@ export default async function PostList({ page }: { page: number }) {
   try {
     const skip = (page - 1) * PAGE_SIZE;
 
-    const total = await prisma.post.count();
-    const posts = await prisma.post.findMany({
-      orderBy: { createdAt: "desc" },
-      skip,
-      take: PAGE_SIZE,
-      select: { id: true, author: true, body: true, createdAt: true },
-    });
+    const { count, error: countError } = await supabase
+      .from("Post")
+      .select("*", { count: "exact", head: true });
 
-    if (total === 0) {
+    if (countError) {
+      console.error("Count error:", countError);  // 打印完整的錯誤物件
+      throw countError;  // 如果有錯誤，拋出錯誤
+    }
+
+    const { data: posts, error: postsError } = await supabase
+      .from("Post")
+      .select("id, author, body, createdAt")
+      .order("createdAt", { ascending: false })
+      .range(skip, skip + PAGE_SIZE - 1);
+
+    if (postsError) {
+      console.error("Posts error:", postsError);  // 打印完整的錯誤物件
+      throw postsError;  // 如果有錯誤，拋出錯誤
+    }
+
+    if (count === 0) {
       return <div className="mt-6 text-sm text-zinc-700">目前沒有留言，留一則試試看吧！</div>;
     }
 
@@ -47,8 +60,9 @@ export default async function PostList({ page }: { page: number }) {
         })}
       </ul>
     );
-  } catch (err: unknown) {                       {/* ✅ 用 unknown + 窄化 */}
-    const message = err instanceof Error ? err.message : String(err);
+  } catch (err: unknown) {
+    // 改進錯誤處理，顯示完整的錯誤訊息
+    const message = err instanceof Error ? err.message : JSON.stringify(err, null, 2);
     return (
       <pre className="mt-6 whitespace-pre-wrap rounded bg-red-50 p-3 text-sm text-red-700">
         伺服器端讀取資料時發生錯誤：{message}
@@ -56,3 +70,4 @@ export default async function PostList({ page }: { page: number }) {
     );
   }
 }
+

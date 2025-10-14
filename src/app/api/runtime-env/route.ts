@@ -1,5 +1,5 @@
 export async function GET() {
-  const url = process.env.DATABASE_URL || "";
+  const url = process.env.SUPABASE_URL || "";
   try {
     const u = new URL(url);
     return Response.json({

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { prisma } from "@/lib/prisma";
+import supabase from "@/lib/supabase"; // 引入 Supabase 客戶端
 import { PAGE_SIZE } from "./PostList";
 
 function getPaginationRange(totalPages: number, current: number, sibling = 1, boundary = 1) {
@@ -22,8 +22,16 @@ function getPaginationRange(totalPages: number, current: number, sibling = 1, bo
 
 export default async function Pagination({ page }: { page: number }) {
   try {
-    const total = await prisma.post.count();
-    const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+    const { count, error: countError } = await supabase
+      .from("Post")
+      .select("*", { count: "exact", head: true });
+
+    if (countError) {
+      console.error("Count error:", countError);  // 打印完整的錯誤物件
+      throw countError;  // 如果有錯誤，拋出錯誤
+    }
+
+    const totalPages = Math.max(1, Math.ceil(count / PAGE_SIZE));
     if (totalPages <= 1) return null;
 
     const prev = Math.max(1, page - 1);
@@ -89,8 +97,10 @@ export default async function Pagination({ page }: { page: number }) {
       </nav>
     );
   } catch (err: unknown) {
-    const message = err instanceof Error ? err.message : String(err);
-    // 不動你的樣式，錯誤時僅顯示純文字（避免整頁白屏）
-    return <pre>分頁元件讀取資料時發生錯誤：{message}</pre>;
+    // 改進錯誤處理，顯示完整的錯誤訊息
+    const message = err instanceof Error ? err.message : JSON.stringify(err, null, 2);
+    return (
+      <pre>分頁元件讀取資料時發生錯誤：{message}</pre>
+    );
   }
 }
