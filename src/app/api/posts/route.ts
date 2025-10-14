@@ -1,5 +1,6 @@
 // src/app/api/posts/route.ts
-import { NextResponse } from "next";
+import { NextResponse } from "next/server";  // 從 "next/server" 引入
+
 import supabase from "@/lib/supabase";
 
 export async function GET() {
