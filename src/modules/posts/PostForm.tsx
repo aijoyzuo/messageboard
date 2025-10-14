@@ -22,7 +22,7 @@ export default function PostForm() {
       // 提交資料到 Supabase
       const { author, body } = Object.fromEntries(fd.entries());
       
-      const { data, error } = await supabase
+      const { error } = await supabase
         .from("Post")
         .insert([
           { author: author || "Anonymous", body },

@@ -27,11 +27,12 @@ export default async function Pagination({ page }: { page: number }) {
       .select("*", { count: "exact", head: true });
 
     if (countError) {
-      console.error("Count error:", countError);  // 打印完整的錯誤物件
+      console.error("Count error:", countError);
       throw countError;  // 如果有錯誤，拋出錯誤
     }
 
-    const totalPages = Math.max(1, Math.ceil(count / PAGE_SIZE));
+    // 確保 count 不為 null，若為 null 則設置為 0
+    const totalPages = Math.max(1, Math.ceil((count ?? 0) / PAGE_SIZE));
     if (totalPages <= 1) return null;
 
     const prev = Math.max(1, page - 1);
@@ -97,7 +98,6 @@ export default async function Pagination({ page }: { page: number }) {
       </nav>
     );
   } catch (err: unknown) {
-    // 改進錯誤處理，顯示完整的錯誤訊息
     const message = err instanceof Error ? err.message : JSON.stringify(err, null, 2);
     return (
       <pre>分頁元件讀取資料時發生錯誤：{message}</pre>
