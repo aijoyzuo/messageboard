@@ -72,7 +72,9 @@ export default async function PostDetail({
 
       <article className="rounded-lg bg-white/60 p-5">
         <div className="text-sm text-slate-500 text-right">
-          {new Date(post.createdAt).toLocaleString("zh-TW")}
+          {new Date(post.createdAt).toLocaleString("zh-Taiwan", {
+            timeZone: "Asia/Taipei",  // 強制使用台灣時區
+          })}
         </div>
 
         <div className="mt-3 mb-5 whitespace-pre-wrap break-words leading-relaxed text-slate-800">

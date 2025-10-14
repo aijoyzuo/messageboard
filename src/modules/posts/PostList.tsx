@@ -42,7 +42,9 @@ export default async function PostList({ page }: { page: number }) {
             <li key={p.id} className="rounded-lg bg-white/50 p-5">
               <div className="text-slate-700">
                 <span className="font-bold">{p.author || "Anonymous"}</span>{" · "}
-                {new Date(p.createdAt).toLocaleString("zh-TW")}
+                {new Date(p.createdAt).toLocaleString("zh-TW", {
+                  timeZone: "Asia/Taipei",
+                })}
               </div>
               <div className="mt-1 text-slate-500 line-clamp-1 whitespace-pre-line break-words">
                 {p.body}
