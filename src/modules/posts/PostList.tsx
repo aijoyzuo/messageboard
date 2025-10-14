@@ -36,7 +36,8 @@ export default async function PostList({ page }: { page: number }) {
     return (
       <ul className="mt-6 space-y-3">
         {posts.map((p) => {
-          const needsMore = p.body.includes("\n") || p.body.length > 60;
+          // 判斷是否需要顯示「顯示完整內容」
+          const needsMore = p.body.includes("\n") || p.body.length > 80;
 
           return (
             <li key={p.id} className="rounded-lg bg-white/50 p-5">
@@ -46,7 +47,7 @@ export default async function PostList({ page }: { page: number }) {
                   timeZone: "Asia/Taipei",
                 })}
               </div>
-              <div className="mt-1 text-slate-500 line-clamp-1 whitespace-pre-line break-words">
+              <div className="mt-1 text-slate-500 line-clamp-2 whitespace-pre-line break-words">
                 {p.body}
               </div>
               {needsMore && (

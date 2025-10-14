@@ -75,7 +75,7 @@ export default function PostForm() {
       {/* 內容（可換行） */}
       <textarea
         name="body"
-        placeholder="想說的話（按 Enter 可換行）"
+        placeholder="想說的話（內容較多者建議按 Enter 換行）"
         required
         rows={4}
         disabled={pending}
