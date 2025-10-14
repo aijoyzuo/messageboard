@@ -9,7 +9,7 @@ export async function addPost(fd: FormData) {
   if (!body) return { ok: false, error: "內容必填" };
 
   // 使用 Supabase 插入新的 Post 資料
-  const { data, error } = await supabase
+  const { error } = await supabase
     .from("Post")
     .insert([{ author, body }]);  // 不需要手動提供 id，讓資料庫自動生成
 
