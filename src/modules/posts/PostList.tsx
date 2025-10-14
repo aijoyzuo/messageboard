@@ -7,7 +7,6 @@ export default async function PostList({ page }: { page: number }) {
   try {
     const skip = (page - 1) * PAGE_SIZE;
 
-    // 查詢資料表的計數
     const { count, error: countError } = await supabase
       .from("Post")
       .select("*", { count: "exact", head: true });
@@ -17,7 +16,6 @@ export default async function PostList({ page }: { page: number }) {
       throw countError;  // 如果有錯誤，拋出錯誤
     }
 
-    // 查詢文章資料
     const { data: posts, error: postsError } = await supabase
       .from("Post")
       .select("id, author, body, createdAt")
@@ -29,7 +27,6 @@ export default async function PostList({ page }: { page: number }) {
       throw postsError;  // 如果有錯誤，拋出錯誤
     }
 
-    // 如果沒有資料，顯示提示
     if (count === 0) {
       return <div className="mt-6 text-sm text-zinc-700">目前沒有留言，留一則試試看吧！</div>;
     }
@@ -63,7 +60,6 @@ export default async function PostList({ page }: { page: number }) {
       </ul>
     );
   } catch (err: unknown) {
-    // 改進錯誤處理，顯示完整的錯誤訊息
     const message = err instanceof Error ? err.message : JSON.stringify(err, null, 2);
     return (
       <pre className="mt-6 whitespace-pre-wrap rounded bg-red-50 p-3 text-sm text-red-700">
