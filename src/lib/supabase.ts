@@ -14,4 +14,12 @@ console.log("Supabase Anon Key:", process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY);
 
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
+const { data, error } = await supabase.from("Post").select("*");
+
+if (error) {
+  console.error("Error fetching posts:", error);
+} else {
+  console.log("Fetched posts:", data);
+}
+
 export default supabase;
