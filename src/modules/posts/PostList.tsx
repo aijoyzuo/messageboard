@@ -12,8 +12,8 @@ export default async function PostList({ page }: { page: number }) {
       .select("*", { count: "exact", head: true });
 
     if (countError) {
-      console.error("Count error:", countError);  // 打印完整的錯誤物件
-      throw countError;  // 如果有錯誤，拋出錯誤
+      console.error("Count error:", countError);
+      throw countError;
     }
 
     const { data: posts, error: postsError } = await supabase
@@ -23,8 +23,8 @@ export default async function PostList({ page }: { page: number }) {
       .range(skip, skip + PAGE_SIZE - 1);
 
     if (postsError) {
-      console.error("Posts error:", postsError);  // 打印完整的錯誤物件
-      throw postsError;  // 如果有錯誤，拋出錯誤
+      console.error("Posts error:", postsError);
+      throw postsError;
     }
 
     if (count === 0) {
@@ -62,9 +62,10 @@ export default async function PostList({ page }: { page: number }) {
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : JSON.stringify(err, null, 2);
     return (
-      <pre className="mt-6 whitespace-pre-wrap rounded bg-red-50 p-3 text-sm text-red-700">
-        伺服器端讀取資料時發生錯誤：{message}
-      </pre>
+      <div className="mt-6 text-red-500">
+        <p>資料載入時發生錯誤：{message}</p>
+        <p>請稍後再試，或聯繫客服。</p>
+      </div>
     );
   }
 }

@@ -1,56 +1,54 @@
-"use client";
-
+"use client"; 
 import { useRef, useState, FormEvent, KeyboardEvent } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation"; // 引入 Next.js 的 router 和 searchParams
 import supabase from "@/lib/supabase"; // 引入 Supabase 客戶端
 
 export default function PostForm() {
   const formRef = useRef<HTMLFormElement>(null);
   const [pending, setPending] = useState(false);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null); // 用來顯示錯誤訊息
   const searchParams = useSearchParams();
   const router = useRouter(); // 初始化 router
-  const currentPage = Number(searchParams.get("page") ?? "1");
+
+  // 防止 searchParams 為 null，給予默認值
+  const currentPage = Number(searchParams?.get("page") ?? "1");  // 使用可選鏈接處理 null 情況
   const from = `/?page=${currentPage || 1}`;
 
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setPending(true);
-    setErrorMessage(null); // 清除之前的錯誤訊息
-
     const fd = new FormData(formRef.current!);
-    const author = fd.get("author") as string;
-    const body = fd.get("body") as string;
-
-    // 檢查是否有填寫 "author" 和 "body"
-    if (!author.trim() || !body.trim()) {
-      setErrorMessage("請填寫名稱和內容！"); // 顯示錯誤訊息
-      setPending(false); // 停止等待狀態
-      return; // 不繼續提交
-    }
-
-    fd.set("from", from);
-
+    fd.set("from", from); // 設置隱藏欄位 from
+    
     try {
       // 提交資料到 Supabase
       const { author, body } = Object.fromEntries(fd.entries());
+      
+      if (!author || !body) {
+        alert("留言或名字不能為空");
+        setPending(false);
+        return;
+      }
 
+      // 使用 Supabase 插入新的 Post 資料
       const { error } = await supabase
         .from("Post")
-        .insert([{ author: author || "Anonymous", body }]);
+        .insert([ 
+          { author: author || "Anonymous", body } 
+        ]);
 
       if (error) {
-        setErrorMessage(error.message ?? "送出失敗"); // 顯示錯誤訊息
+        alert(error.message ?? "送出失敗");
         return;
       }
 
       formRef.current?.reset(); // 清空表單
       router.replace("/?page=1"); // 回到第一頁
+
     } catch (error) {
       console.error(error);
-      setErrorMessage("送出失敗");
+      alert("送出失敗");
     } finally {
-      setPending(false); // 停止等待狀態
+      setPending(false);
     }
   };
 
@@ -60,11 +58,6 @@ export default function PostForm() {
 
   return (
     <form ref={formRef} onSubmit={onSubmit} className="space-y-3 text-slate-700">
-      {/* 顯示錯誤訊息 */}
-      {errorMessage && (
-        <div className="text-red-500 text-sm">{errorMessage}</div>
-      )}
-
       {/* 名字 */}
       <input
         name="author"

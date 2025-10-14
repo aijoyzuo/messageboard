@@ -28,10 +28,9 @@ export default async function Pagination({ page }: { page: number }) {
 
     if (countError) {
       console.error("Count error:", countError);
-      throw countError;  // 如果有錯誤，拋出錯誤
+      throw countError;
     }
 
-    // 確保 count 不為 null，若為 null 則設置為 0
     const totalPages = Math.max(1, Math.ceil((count ?? 0) / PAGE_SIZE));
     if (totalPages <= 1) return null;
 
@@ -61,7 +60,6 @@ export default async function Pagination({ page }: { page: number }) {
             it === "..." ? (
               <li key={`dots-${idx}`} className="px-2 text-slate-400 select-none">…</li>
             ) : it === page ? (
-              // 目前頁：深底白字
               <li key={it}>
                 <span
                   aria-current="page"
@@ -76,7 +74,7 @@ export default async function Pagination({ page }: { page: number }) {
                 <Link
                   href={`/?page=${it}`}
                   className="px-3 py-2 rounded text-sm
-                              hover:bg-blue-300 hover:text-blue-100" 
+                              hover:bg-blue-300 hover:text-blue-100"
                 >
                   {it}
                 </Link>
@@ -104,3 +102,4 @@ export default async function Pagination({ page }: { page: number }) {
     );
   }
 }
+
