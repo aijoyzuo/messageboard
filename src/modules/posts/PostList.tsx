@@ -1,6 +1,5 @@
 import Link from "next/link";
-import supabase from "@/lib/supabase"; // 載入 Supabase 客戶端
-
+import supabase from "@/lib/supabase"; // 引入 Supabase 客戶端
 
 export const PAGE_SIZE = 10;
 
@@ -8,6 +7,7 @@ export default async function PostList({ page }: { page: number }) {
   try {
     const skip = (page - 1) * PAGE_SIZE;
 
+    // 查詢資料表的計數
     const { count, error: countError } = await supabase
       .from("Post")
       .select("*", { count: "exact", head: true });
@@ -17,6 +17,7 @@ export default async function PostList({ page }: { page: number }) {
       throw countError;  // 如果有錯誤，拋出錯誤
     }
 
+    // 查詢文章資料
     const { data: posts, error: postsError } = await supabase
       .from("Post")
       .select("id, author, body, createdAt")
@@ -28,6 +29,7 @@ export default async function PostList({ page }: { page: number }) {
       throw postsError;  // 如果有錯誤，拋出錯誤
     }
 
+    // 如果沒有資料，顯示提示
     if (count === 0) {
       return <div className="mt-6 text-sm text-zinc-700">目前沒有留言，留一則試試看吧！</div>;
     }
@@ -70,4 +72,3 @@ export default async function PostList({ page }: { page: number }) {
     );
   }
 }
-

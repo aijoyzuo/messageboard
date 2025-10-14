@@ -22,6 +22,7 @@ export default async function PostDetail({
     .eq("id", id)
     .single(); // .single() 用來保證只返回一條資料
 
+  // 處理資料錯誤或無資料情況
   if (postError || !post) return notFound();
 
   // 查詢比該文章新的文章（創建時間晚於該文章）
@@ -42,6 +43,16 @@ export default async function PostDetail({
     .limit(1)
     .single();
 
+  // 處理查詢錯誤
+  if (newerError) {
+    console.error("Newer post error:", newerError);
+  }
+
+  if (olderError) {
+    console.error("Older post error:", olderError);
+  }
+
+  // 計算導覽連結
   const newerHref = newer ? `/post/${newer.id}?from=${encodeURIComponent(backHref)}` : "#";
   const olderHref = older ? `/post/${older.id}?from=${encodeURIComponent(backHref)}` : "#";
 
