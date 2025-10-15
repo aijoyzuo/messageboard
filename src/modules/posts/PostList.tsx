@@ -33,7 +33,7 @@ export default async function PostList({ page }: { page: number }) {
       return <div className="mt-6 text-sm text-zinc-700">目前沒有留言，留一則試試看吧！</div>;
     }
 
-    const from = `/?page=${page}`;
+   // const from = `/?page=${page}`;
 
    return (
   <ul className="mt-6 space-y-3">

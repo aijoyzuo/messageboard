@@ -3,14 +3,22 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
-export function PostItem({ post, from }: { post: any; from: string }) {
+// ✅ 定義 Post 型別
+export interface Post {
+  id: number;
+  author: string | null;
+  body: string;
+  createdAt: string; // 從 Supabase 取出來通常是 ISO 字串
+}
+
+export function PostItem({ post, from }: { post: Post; from: string }) {
   const bodyRef = useRef<HTMLDivElement>(null);
   const [isClamped, setIsClamped] = useState(false);
 
   useEffect(() => {
     const el = bodyRef.current;
     if (el) {
-      // 比較 scrollHeight > clientHeight 代表有被裁切
+      // 比較 scrollHeight > clientHeight 判斷是否被截斷
       setIsClamped(el.scrollHeight > el.clientHeight);
     }
   }, []);
