@@ -1,5 +1,7 @@
-import Link from "next/link";
+
+import { PostItem } from "@/components/PostItem";
 import supabase from "@/lib/supabase"; // 引入 Supabase 客戶端
+
 
 export const PAGE_SIZE = 10;
 
@@ -33,35 +35,13 @@ export default async function PostList({ page }: { page: number }) {
 
     const from = `/?page=${page}`;
 
-    return (
-      <ul className="mt-6 space-y-3">
-        {posts.map((p) => {
-          // 判斷是否需要顯示「顯示完整內容」
-          const needsMore = p.body.includes("\n") || p.body.length > 80;
-
-          return (
-            <li key={p.id} className="rounded-lg bg-white/50 p-5">
-              <div className="text-slate-700">
-                <span className="font-bold">{p.author || "Anonymous"}</span>{" · "}
-                {new Date(p.createdAt).toLocaleString("zh-TW", {
-                  timeZone: "Asia/Taipei",
-                })}
-              </div>
-              <div className="mt-1 text-slate-500 line-clamp-2 whitespace-pre-line break-words">
-                {p.body}
-              </div>
-              {needsMore && (
-                <div className="mt-2">
-                  <Link className="text-sm text-blue-500 hover:underline" href={`/post/${p.id}?from=${encodeURIComponent(from)}`}>
-                    查看完整內容
-                  </Link>
-                </div>
-              )}
-            </li>
-          );
-        })}
-      </ul>
-    );
+   return (
+  <ul className="mt-6 space-y-3">
+    {posts.map((p) => (
+      <PostItem key={p.id} post={p} from={`/?page=${page}`} />
+    ))}
+  </ul>
+);
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : JSON.stringify(err, null, 2);
     return (

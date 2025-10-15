@@ -70,7 +70,7 @@ export default async function PostDetail({
         </Link>
       </div>
 
-      <article className="rounded-lg bg-white/60 p-5">
+      <article className="rounded-lg bg-white/60 p-5 min-h-[260px]">
         <div className="text-sm text-slate-500 text-right">
           {new Date(post.createdAt).toLocaleString("zh-Taiwan", {
             timeZone: "Asia/Taipei",  // 強制使用台灣時區
