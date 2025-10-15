@@ -33,7 +33,7 @@ export function PostItem({ post, from }: { post: Post; from: string }) {
       </div>
       <div
         ref={bodyRef}
-        className="mt-1 text-slate-500 line-clamp-3 whitespace-pre-line break-words"
+        className="mt-1 text-slate-500 line-clamp-2 whitespace-pre-line break-words"
       >
         {post.body}
       </div>
