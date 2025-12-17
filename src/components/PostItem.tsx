@@ -22,6 +22,7 @@ export function PostItem({ post, from }: { post: Post; from: string }) {
       const date = new Date(post.createdAt);
       const formatted = date.toLocaleString("zh-TW", {
         timeZone: "Asia/Taipei",
+        hour12: false, 
       });
       setFormattedDate(formatted);
     }
