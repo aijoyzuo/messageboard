@@ -16,8 +16,8 @@ export function PostItem({ post, from }: { post: Post; from: string }) {
   const [isClamped, setIsClamped] = useState(false);
   const [formattedDate, setFormattedDate] = useState("");
 
+  // 直接在 useEffect 之外處理，確保初始顯示時間不依賴於 useEffect
   useEffect(() => {
-    // 確保只有在客戶端執行
     if (post.createdAt) {
       const date = new Date(post.createdAt);
       const formatted = date.toLocaleString("zh-TW", {
@@ -31,7 +31,7 @@ export function PostItem({ post, from }: { post: Post; from: string }) {
       // 比較 scrollHeight > clientHeight 判斷是否被截斷
       setIsClamped(el.scrollHeight > el.clientHeight);
     }
-  }, [post.createdAt]);
+  }, [post.createdAt]);  // 依賴於 post.createdAt，確保只在數據變更時更新
 
   return (
     <li className="rounded-lg bg-white/50 p-5">
