@@ -20,7 +20,7 @@ export function PostItem({ post, from }: { post: Post; from: string }) {
   useEffect(() => {
     if (post.createdAt) {
       const date = new Date(post.createdAt);
-      const formatted = date.toLocaleString("zh-TW", {
+      const formatted = date.toLocaleDateString("zh-TW", {
         timeZone: "Asia/Taipei",
         hour12: false, 
       });
