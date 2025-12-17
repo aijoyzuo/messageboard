@@ -14,22 +14,29 @@ export interface Post {
 export function PostItem({ post, from }: { post: Post; from: string }) {
   const bodyRef = useRef<HTMLDivElement>(null);
   const [isClamped, setIsClamped] = useState(false);
+  const [formattedDate, setFormattedDate] = useState("");
 
   useEffect(() => {
+    // 確保只有在客戶端執行
+    if (post.createdAt) {
+      const date = new Date(post.createdAt);
+      const formatted = date.toLocaleString("zh-TW", {
+        timeZone: "Asia/Taipei",
+      });
+      setFormattedDate(formatted);
+    }
     const el = bodyRef.current;
     if (el) {
       // 比較 scrollHeight > clientHeight 判斷是否被截斷
       setIsClamped(el.scrollHeight > el.clientHeight);
     }
-  }, []);
+  }, [post.createdAt]);
 
   return (
     <li className="rounded-lg bg-white/50 p-5">
       <div className="text-slate-700">
         <span className="font-bold">{post.author || "Anonymous"}</span> ·{" "}
-        {new Date(post.createdAt).toLocaleString("zh-TW", {
-          timeZone: "Asia/Taipei",
-        })}
+        {formattedDate}
       </div>
       <div
         ref={bodyRef}
